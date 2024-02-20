@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<main>
+
+    <h1 class="text-3xl my-4">My tasks</h1>
+    <form id="todo_form" class="py-2">
+        {% csrf_token %}
+        <input type="text" name="tasks" id="tasks" class="border text-lg py-1">
+        <button type="submit" class="ml-4 border px-3 py-2">Add</button>
+    </form>
+    <script>
+        $(document).ready(function(){
+            $('#todo_form').submit(function(event){
+                event.preventDefault();
+    
+                var formData = $(this).serialize();
+    
+                $.ajax({
+                    type: 'POST',
+                    url: '/todoApp/',
+                    data: formData,
+                    success: function(response){
+                        console.log("form data submitted successfully");
+                        $('#taskList').append('<li>' + '<input type="checkbox" value="" > ' + response.task + '</li>');
+                        $('#tasks').val('');
+                    },
+                    error: function(response){
+                        console.log("error: ", error);
+                    }
+                });
+            });
+        });
+    </script>
+    <form id="delete">
+        <button type="submit" class="border bg-slate-700 text-white px-3 py-1 rounded-2xl">Delete</button>
+        <ul id="taskList" class="mt-3">
+            {% for x in mytasks %}
+            <li>
+                <input type="checkbox" value="" unchecked>
+                {{x.tasks}}
+            </li>
+            {% endfor %}
+        </ul>
+    </form>
+    
+</main>
+
+</body>
+</html>
